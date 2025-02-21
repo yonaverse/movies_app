@@ -10,6 +10,11 @@ const App = () => {
         <div className="wrapper">
           <header>
             <h1>
+              <img
+                src="/assets/logo.png"
+                style={{ width: "80px", height: "90px" }}
+                alt="logo"
+              />
               <img src="/assets/image.png" alt="hero-image" />
               find <span className="text-gradient">movies</span> you'll enjoy
               without a hassle
