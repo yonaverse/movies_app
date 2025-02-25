@@ -2,6 +2,7 @@ import detenv from "dotenv";
 import { useState, useEffect } from "react";
 import Search from "./component/search";
 import Spinner from "./component/spinner";
+import Movie_card from "./component/movie_card";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.TMDB;
@@ -84,9 +85,7 @@ const App = () => {
             ) : (
               <ul>
                 {movies.map((movie) => (
-                  <p className="text-white" key={movie.id}>
-                    {movie.title}
-                  </p>
+                  <Movie_card key={movie.id} movie={movie} />
                 ))}
               </ul>
             )}
