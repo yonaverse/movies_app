@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Search from "./component/search";
 import Spinner from "./component/spinner";
 import Movie_card from "./component/movie_card";
+import { useDebounce } from "react-use";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB;
@@ -18,7 +19,10 @@ const App = () => {
   const [searchterm, setSearchterm] = useState("");
   const [errormessage, setErrormessage] = useState("");
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(false); // updated
+  const [loading, setLoading] = useState(false);
+  const [debouncedserachterm, setDebouncedserachterm] = useState("");
+
+  useDebounce(() => setDebouncedserachterm(searchterm), 1000, [searchterm]);
 
   const fetchMovies = async (query = "") => {
     setLoading(true);
@@ -45,15 +49,15 @@ const App = () => {
       setMovies(data.results || []);
     } catch (error) {
       console.error(`error: ${error}`);
-      // setErrormessage("An error occured. Please try again later.");
+      setErrormessage("An error occured. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchMovies(searchterm);
-  }, [searchterm]);
+    fetchMovies(debouncedserachterm);
+  }, [debouncedserachterm]);
 
   return (
     <main className="bg-[image:url('/assets/BG.png')]">
