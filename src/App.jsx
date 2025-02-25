@@ -1,20 +1,16 @@
-import detenv from "dotenv";
 import { useState, useEffect } from "react";
 import Search from "./component/search";
 import Spinner from "./component/spinner";
 import Movie_card from "./component/movie_card";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
-const API_KEY = import.meta.env.TMDB;
-
-// const URL =
-//   "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc";
+const API_KEY = import.meta.env.VITE_TMDB;
 
 const API_OPTIONS = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization: `Bearer${API_KEY}`,
+    Authorization: `Bearer ${API_KEY}`,
   },
 };
 
@@ -22,24 +18,26 @@ const App = () => {
   const [searchterm, setSearchterm] = useState("");
   const [errormessage, setErrormessage] = useState("");
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState("flase");
+  const [loading, setLoading] = useState(false); // updated
 
-  const fetchMovies = async () => {
+  const fetchMovies = async (query = "") => {
     setLoading(true);
     setErrormessage("");
 
     try {
-      const endpoint = `${API_BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
+      const endpoint = query
+        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+        : `${API_BASE_URL}/movie/popular?language=en-US&page=1`;
       const response = await fetch(endpoint, API_OPTIONS);
 
       if (!response.ok) {
-        throw new Error("An error occured. Please try again later.");
+        throw new Error("An error occured while fetching the data.");
       }
 
       const data = await response.json();
 
-      if (data.response === false) {
-        setErrormessage("An error occured. Please try again later.");
+      if (query && (!data.results || data.results.length === 0)) {
+        setErrormessage("No movies found for your search.");
         setMovies([]);
         return;
       }
@@ -47,15 +45,15 @@ const App = () => {
       setMovies(data.results || []);
     } catch (error) {
       console.error(`error: ${error}`);
-      setErrormessage("An error occured. Please try again later.");
+      // setErrormessage("An error occured. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    fetchMovies(searchterm);
+  }, [searchterm]);
 
   return (
     <main className="bg-[image:url('/assets/BG.png')]">
