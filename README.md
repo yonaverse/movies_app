@@ -25,7 +25,7 @@ The **Movies_App** is a simple React frontend application that fetches and displ
    - Create a `.env` file in the root directory.
    - Add your access token:
      ```env
-     VITE_TMDB=your_api_key_here
+     VITE_TMDB=your_access_token
      ```
 
 4. **Run the app:**
